@@ -439,11 +439,13 @@ function Execution(engine, definitions, options, isRecovered = false) {
 
     function onComplete(eventName) {
       broker.publish('event', `engine.${eventName}`, {}, {type: eventName});
+      broker.off('return', onBrokerReturn);
       engine.emit(eventName, Api());
     }
 
     function onError(err) {
       broker.publish('event', 'engine.error', err, {type: 'error', mandatory: true});
+      broker.off('return', onBrokerReturn);
     }
 
     function emitListenerEvent(...args) {
